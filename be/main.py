@@ -1,8 +1,21 @@
 from typing import Annotated, Any, Union
 from fastapi import Depends, FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import Field, SQLModel, Session, create_engine, select
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class Question(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
@@ -12,6 +25,11 @@ class Answer(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     question_id: int = Field(foreign_key="question.id")
     text: str = Field(index=True)
+
+class AnswerVisits(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    question_id: int = Field(foreign_key="question.id")
+    visits: int = Field(index=True)
 
 sqlite_file_name = "database.db"
 sqlite_url = f"sqlite:///{sqlite_file_name}"
@@ -82,5 +100,26 @@ def read_answers(
 def read_answer(answer_id: int, session: SessionDep) -> Answer:
     answer = session.get(Answer, answer_id)
     if not answer:
-        raise HTTPException(status_code=200, detail="answer not found")
+        raise HTTPException(status_code=404, detail="answer not found")
     return answer
+
+@app.get("/answer/{answer_id}")
+def read_answer(answer_id: int, session: SessionDep) -> Answer:
+    answer = session.get(Answer, answer_id)
+    if not answer:
+        raise HTTPException(status_code=404, detail="answer not found")
+    return answer
+
+
+@app.put("/visits/{question_id}")
+def update_visits(question_id: int, session: SessionDep) -> AnswerVisits:
+    visits = session.query(AnswerVisits).filter(AnswerVisits.question_id == question_id).first()
+    if visits:
+        visits.visits += 1
+    else:
+        visits = AnswerVisits(question_id=question_id, visits=1)
+        session.add(visits)
+
+    session.commit()
+    session.refresh(visits)
+    return visits
