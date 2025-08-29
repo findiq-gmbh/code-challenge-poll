@@ -1,0 +1,47 @@
+services:
+  backend:
+    build:
+      context: ./be
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - poll_data:/app/data
+    environment:
+      - PYTHONPATH=/app
+    networks:
+      - poll-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  frontend:
+    build:
+      context: ./fe
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - poll-network
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  poll-network:
+    driver: bridge
+
+volumes:
+  poll_data:
+    driver: local

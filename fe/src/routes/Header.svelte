@@ -6,9 +6,6 @@
 
 <header>
 	<div class="corner">
-		<a href="https://svelte.dev/docs/kit">
-			<img src={logo} alt="SvelteKit" />
-		</a>
 	</div>
 
 	<nav>
@@ -22,8 +19,8 @@
 			<li aria-current={page.url.pathname === '/questions' ? 'page' : undefined}>
 				<a href="/questions">questions</a>
 			</li>
-			<li aria-current={page.url.pathname.startsWith('/answers') ? 'page' : undefined}>
-				<a href="/answers">answers</a>
+			<li aria-current={page.url.pathname === '/questions/statistics' ? 'page' : undefined}>
+				<a href="/questions/statistics">Statistics</a>
 			</li>
 		</ul>
 		<svg viewBox="0 0 2 3" aria-hidden="true">
