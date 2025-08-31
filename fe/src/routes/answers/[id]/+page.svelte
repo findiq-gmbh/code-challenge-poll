@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { get } from 'svelte/store';
+	import { increaseQuestionAnswerViewCount } from '../../../services/questions.service';
 	const id = get(page).params.id;
 	// Feedback: Since the variable `answer` holds a list of answers, consider naming it `answers`
 	let answer: Answer[] = [];
@@ -66,6 +67,7 @@
 	}
 	onMount(() => {
 		fetchAnswers();
+		increaseQuestionAnswerViewCount(id);
 	});
 
 	// Feedback: Listening on `message` value for logic decisions, can lead to unexpected behavior if `message` changes unexpectedly

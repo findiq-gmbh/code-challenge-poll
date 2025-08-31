@@ -5,11 +5,19 @@ from sqlmodel import Field, SQLModel, Session, create_engine, select
 
 # Feedback: To be able to talk to the API, you need to implement CORS handling. Remember that you need a configuration for different environments.
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Suggestion: Move models to a differnt file for a better structuring and overview in this file.
 class Question(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     text: str = Field(index=True)
+    answer_view_count: int = Field(default=0)
 
 class Answer(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
@@ -74,6 +82,20 @@ def read_question(question_id: int, session: SessionDep) -> Question:
         raise HTTPException(status_code=404, detail="question not found")
     return question
 
+@app.patch("/question/{question_id}/increase_answer_view_count")
+def increase_question_answer_view_count(question_id: int, session: SessionDep):
+    question = session.get(Question, question_id)
+    if not question:
+        raise HTTPException(status_code=404, detail="question not found")
+    question.answer_view_count += 1
+    session.add(question)
+    session.commit()
+    session.refresh(question)
+    return question
+
+@app.get("/questions")
+def read_all_questions(session: SessionDep):
+    return session.exec(select(Question)).all()
 
 # Feedback: Currently there is no validation on the `Answer` object, which is sent by the client.
 #           If you provide an ID within the `Answer` object, it will fail due to duplicate key constraint from the DB.
