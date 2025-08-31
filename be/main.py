@@ -7,7 +7,7 @@ from sqlmodel import Field, SQLModel, Session, create_engine, select
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:5173"], # Feedback: In PROD you need to adjust this to your frontend domain.
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

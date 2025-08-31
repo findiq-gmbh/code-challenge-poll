@@ -29,7 +29,7 @@
 			} else {
 				message = 'Failed to submit question.';
 			}
-		} catch (error) {
+		} catch {
 			// Feedback: `error` from `catch()` is unused, you can remove it.
 			message = 'Error submitting question.';
 		}
@@ -46,7 +46,7 @@
 			} else {
 				error = 'Failed to load questions.';
 			}
-		} catch (e) {
+		} catch {
 			// Feedback: `e` from `catch()` is unused, you can remove it.
 			error = 'Error loading questions.';
 		} finally {
@@ -83,7 +83,7 @@
 	<h2>All Questions</h2>
 	<ul>
 		<!-- Feedback: Svelte requires each block having a key in a loop -->
-		{#each questions as question}
+		{#each questions as question (question.id)}
 			<li>{question.text}</li>
 			<a href="/answers/{question.id}">Show Answers</a>
 		{/each}

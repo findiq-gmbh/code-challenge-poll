@@ -17,6 +17,7 @@
 	async function handleSubmit(event: SubmitEvent) {
 		// Feedback: Is this `preventDefault` necessary due to the `preventDefault` on the `<form/>` element?
 		event.preventDefault();
+		message = '';
 		try {
 			// Feedback: Extract service logic into a separate function
 			//           Use an environment variable to provide `host` from outside, necessary if you want to deploy it.
@@ -29,12 +30,13 @@
 				body: JSON.stringify({ text, question_id: id })
 			});
 			if (response.ok) {
+				console.log('Come here');
 				message = 'Answer submitted successfully!';
 				text = '';
 			} else {
 				message = 'Failed to submit answer.';
 			}
-		} catch (error) {
+		} catch {
 			// Feedback: If you are not using the `error` variable, you can remove it
 			message = 'Error submitting answer.';
 		}
@@ -57,7 +59,7 @@
 			} else {
 				error = 'Failed to load answer.';
 			}
-		} catch (error) {
+		} catch {
 			// Feedback: Error variable from `catch` has same variable name as global `error`, and conflicts
 			// Suggestion: If you don't need the `catch(error)` variable, you can remove it
 			error = 'Error loading answer.';
@@ -91,7 +93,7 @@
 {:else}
 	<ul>
 		<!-- Feedback: Svelte requires each block having a key in a loop -->
-		{#each answer as ans}
+		{#each answer as ans (ans.id)}
 			<li>{ans.text}</li>
 		{/each}
 	</ul>

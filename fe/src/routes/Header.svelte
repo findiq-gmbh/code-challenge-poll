@@ -16,15 +16,8 @@
 			<path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
 		</svg>
 		<ul>
-			<li aria-current={page.url.pathname === '/' ? 'page' : undefined}>
-				<a href="/">Home</a>
-			</li>
 			<li aria-current={page.url.pathname === '/questions' ? 'page' : undefined}>
 				<a href="/questions">questions</a>
-			</li>
-			<!-- Feedback: This navigation point does not really make sence, since answers are always question related. Maybe you have to check-in with the Product/UX team, how this is actually ment to work. -->
-			<li aria-current={page.url.pathname.startsWith('/answers') ? 'page' : undefined}>
-				<a href="/answers">answers</a>
 			</li>
 			<li aria-current={page.url.pathname === '/question_answer_counts' ? 'page' : undefined}>
 				<a href="/question_answer_counts">Question Answer Count</a>
