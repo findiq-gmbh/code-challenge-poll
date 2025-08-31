@@ -30,6 +30,7 @@ See:
   * Separate initialization of DB into separate process
   * Maybe use seed data for local development (to have testing data in local development)
   * You might want to have migrations for DB schema changes
+  * Why does `question.text` has an index? There seems to be no need for it
 * Server
   * CORS are not allowed from FE -> leads to 307 for any FE request
 * Models
