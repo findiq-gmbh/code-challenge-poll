@@ -22,6 +22,7 @@
 			<li aria-current={page.url.pathname === '/questions' ? 'page' : undefined}>
 				<a href="/questions">questions</a>
 			</li>
+			<!-- Feedback: This navigation point does not really make sence, since answers are always question related. Maybe you have to check-in with the Product/UX team, how this is actually ment to work. -->
 			<li aria-current={page.url.pathname.startsWith('/answers') ? 'page' : undefined}>
 				<a href="/answers">answers</a>
 			</li>

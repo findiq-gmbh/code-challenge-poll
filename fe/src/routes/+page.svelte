@@ -1,4 +1,5 @@
 <script lang="ts">
+	// Feedback: These are not used and can be removed.
 	import welcome from '$lib/images/svelte-welcome.webp';
 	import welcomeFallback from '$lib/images/svelte-welcome.png';
 </script>
@@ -8,9 +9,7 @@
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 
-<section>
-
-</section>
+<section></section>
 
 <style>
 	section {
