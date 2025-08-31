@@ -18,6 +18,7 @@
 		event.preventDefault();
 		try {
 			// Feedback: Extract service logic into a separate function
+			//           Use an environment variable to provide `host` from outside, necessary if you want to deploy it.
 			const response = await fetch('http://localhost:8000/answer', {
 				method: 'POST',
 				headers: {
@@ -43,6 +44,7 @@
 		error = '';
 		try {
 			// Feedback: Extract service logic into a separate function
+			//           Use an environment variable to provide `host` from outside, necessary if you want to deploy it.
 			const res = await fetch('http://localhost:8000/answer');
 			if (res.ok) {
 				const answers: Answer[] = await res.json();

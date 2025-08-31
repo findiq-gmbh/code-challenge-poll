@@ -15,6 +15,7 @@
 		try {
 			// Feedback: The API is paginated and only allows a max of 100 questions in return.
 			//           Consider implementing pagination in the frontend to handle this.
+			//           Use an environment variable to provide `host` from outside, necessary if you want to deploy it.
 			const response = await fetch('http://localhost:8000/question', {
 				method: 'POST',
 				headers: {
@@ -38,6 +39,7 @@
 		loading = true;
 		error = '';
 		try {
+			// Feedback: Use an environment variable to provide `host` from outside, necessary if you want to deploy it.
 			const res = await fetch('http://localhost:8000/question');
 			if (res.ok) {
 				questions = await res.json();
