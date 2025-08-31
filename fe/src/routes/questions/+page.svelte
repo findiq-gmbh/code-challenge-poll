@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	// Feedback: `Question` is not imported
+	import type { Question } from '../models';
 	let questions: Question[] = [];
 	let loading = true;
 	let error = '';

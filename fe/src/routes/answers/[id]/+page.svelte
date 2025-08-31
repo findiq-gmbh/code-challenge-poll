@@ -1,10 +1,13 @@
 <script lang="ts">
+	import type { Answer } from '../../models';
 	import { onMount } from 'svelte';
+	// Feedback: `page` seems to be deprecated
 	import { page } from '$app/stores';
 	import { get } from 'svelte/store';
 	import { increaseQuestionAnswerViewCount } from '../../../services/questions.service';
 	const id = get(page).params.id;
 	// Feedback: Since the variable `answer` holds a list of answers, consider naming it `answers`
+	// Feedback: `Answer` is not imported
 	let answer: Answer[] = [];
 	let loading = true;
 	let error = '';

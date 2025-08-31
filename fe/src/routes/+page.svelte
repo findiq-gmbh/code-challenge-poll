@@ -1,7 +1,4 @@
 <script lang="ts">
-	// Feedback: These are not used and can be removed.
-	import welcome from '$lib/images/svelte-welcome.webp';
-	import welcomeFallback from '$lib/images/svelte-welcome.png';
 </script>
 
 <svelte:head>

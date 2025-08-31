@@ -48,6 +48,8 @@ See:
   * `@eslint/plugin-kit <0.3.4` LOW
   * `cookie <0.7.0` LOW
   * `devalue <5.3.2` HIGH
+* `models` interfaces are not exported
+* `Question` and `Model` interfaces were not imported in svelte pages
 * UX/UI
   * Home is an unused page, that either should have content or be removed
   * The answer page is not showing the question it refers to
@@ -55,5 +57,5 @@ See:
   * Questions API accepts `limit=100` as max, but the FE is not providing a pagination, means if there are more than 100 answers, the user will not be able to see them all
   * Answer page is not showing an info, when no answers are available so far
   * Answers are not reloaded after submitting an answer
-  * Submitting an answer does not show the user any feedback and since it's not reloading he might think his answer was lost and sends it again.
+  * Submitting a second answer, does not reload the
   * Answers API accepts `limit=100` as max, but the FE is not providing a pagination, means if there are more than 100 answers, the user will not be able to see them all
