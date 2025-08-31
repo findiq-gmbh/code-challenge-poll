@@ -30,7 +30,6 @@
 				body: JSON.stringify({ text, question_id: id })
 			});
 			if (response.ok) {
-				console.log('Come here');
 				message = 'Answer submitted successfully!';
 				text = '';
 			} else {
