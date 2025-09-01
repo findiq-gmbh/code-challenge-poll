@@ -1,23 +1,19 @@
-from typing import Annotated, Any, Union
-from fastapi import Depends, FastAPI, HTTPException, Query
-from sqlmodel import Field, SQLModel, Session, create_engine, select
+from contextlib import asynccontextmanager
+import os
+from typing import Annotated
+from fastapi import Depends, FastAPI
+from sqlmodel import SQLModel, Session, create_engine
+
+from Enum.app_environment import AppEnvironmentEnum
+from Controller import answer, question
 
 app = FastAPI()
 
-class Question(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
-    text: str = Field(index=True)
-
-class Answer(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
-    question_id: int = Field(foreign_key="question.id")
-    text: str = Field(index=True)
-
-sqlite_file_name = "database.db"
-sqlite_url = f"sqlite:///{sqlite_file_name}"
+# todo: replace later by a environment configuratrion
+database_connection_string = f"sqlite:///database.db"
 
 connect_args = {"check_same_thread": False}
-engine = create_engine(sqlite_url, connect_args=connect_args)
+engine = create_engine(database_connection_string, connect_args=connect_args)
 
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
@@ -28,59 +24,26 @@ def get_session():
         yield session
 
 
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    if env != AppEnvironmentEnum.DEVELOPMENT:
+        return
+    create_db_and_tables()
+    yield
+    engine.dispose(close=True)
+
+
 SessionDep = Annotated[Session, Depends(get_session)]
 
-@app.on_event("startup")
-def on_startup():
-    create_db_and_tables()
-
-@app.post("/question/")
-def create_question(question: Question, session: SessionDep) -> Question:
-    session.add(question)
-    session.commit()
-    session.refresh(question)
-    return question
-
-
-@app.get("/question/")
-def read_questions(
-    session: SessionDep,
-    offset: int = 0,
-    limit: Annotated[int, Query(le=100)] = 100,
-) -> list[Question]:
-    question = session.exec(select(Question).offset(offset).limit(limit)).all()
-    return [*question]
-
-
-@app.get("/question/{question_id}")
-def read_question(question_id: int, session: SessionDep) -> Question:
-    question = session.get(Question, question_id)
-    if not question:
-        raise HTTPException(status_code=404, detail="question not found")
-    return question
-
-
-@app.post("/answer/")
-def create_answer(answer: Answer, session: SessionDep) -> Answer:
-    session.add(answer)
-    session.commit()
-    session.refresh(answer)
-    return answer
-
-
-@app.get("/answer/")
-def read_answers(
-    session: SessionDep,
-    offset: int = 0,
-    limit: Annotated[int, Query(le=100)] = 100,
-) -> list[Answer]:
-    answer = session.exec(select(Answer).offset(offset).limit(limit)).all()
-    return [*answer]
-
-
-@app.get("/answer/{answer_id}")
-def read_answer(answer_id: int, session: SessionDep) -> Answer:
-    answer = session.get(Answer, answer_id)
-    if not answer:
-        raise HTTPException(status_code=200, detail="answer not found")
-    return answer
+# todo: extract later to a env config loader
+env = os.getenv("app_environment", AppEnvironmentEnum.DEVELOPMENT)
+app = FastAPI(
+    debug=env == AppEnvironmentEnum.DEVELOPMENT,
+    docs_url="/docs" if env == AppEnvironmentEnum.DEVELOPMENT else None,
+    redoc_url="/redoc" if env == AppEnvironmentEnum.DEVELOPMENT else None,
+    lifespan=lifespan
+)
+app.include_router(question.router)
+app.include_router(answer.router)
