@@ -1,18 +1,21 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
-	import { get } from 'svelte/store';
-	const id = get(page).params.id;
-	let answer: Answer[] = [];
+	import { page } from '$app/state';
+	import type { Answer, Question } from '@/routes/models';
+	import { API_BASE_URL } from '@/config';
+
+	const id = page.params.id;
+	let answers: Answer[] = [];
+	let question: Question | null = null;
 	let loading = true;
 	let error = '';
 	let text = '';
 	let message = '';
 
-		async function handleSubmit(event: SubmitEvent) {
+	async function handleSubmit(event: SubmitEvent) {
 		event.preventDefault();
 		try {
-			const response = await fetch('http://localhost:8000/answer', {
+			const response = await fetch(`${API_BASE_URL}/questions/${id}/answers`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -34,10 +37,9 @@
 		loading = true;
 		error = '';
 		try {
-			const res = await fetch('http://localhost:8000/answer');
+			const res = await fetch(`${API_BASE_URL}/questions/${id}/answers?offset=0&limit=10`);
 			if (res.ok) {
-				const answers: Answer[] = await res.json();
-				answer = answers.filter(ans => ans.question_id === parseInt(id));
+				answers = await res.json();
 			} else {
 				error = 'Failed to load answer.';
 			}
@@ -47,8 +49,26 @@
 			loading = false;
 		}
 	}
+
+	async function fetchQuestion() {
+		loading = true;
+		error = '';
+		try {
+			const res = await fetch(`http://localhost:8000/questions/${id}`);
+			if (res.ok) {
+				question = await res.json();
+			} else {
+				error = 'Failed to load question.';
+			}
+		} catch (e) {
+			error = 'Error loading question.';
+		} finally {
+			loading = false;
+		}
+	}
 	onMount(() => {
 		fetchAnswers();
+		fetchQuestion();
 	});
 
 	$: if (message === 'Answer submitted successfully!') {
@@ -56,13 +76,12 @@
 	}
 </script>
 
-
+<h1>{question?.title}</h1>
 <form on:submit|preventDefault={handleSubmit}>
 	<label for="answer">Answer:</label>
 	<input id="answer" type="text" bind:value={text} required />
 	<button type="submit">Submit</button>
 </form>
-
 
 {#if loading}
 	<p>Loading...</p>
@@ -70,7 +89,7 @@
 	<p>{error}</p>
 {:else}
 	<ul>
-		{#each answer as ans}
+		{#each answers as ans (ans.id)}
 			<li>{ans.text}</li>
 		{/each}
 	</ul>

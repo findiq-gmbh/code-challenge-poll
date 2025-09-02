@@ -9,7 +9,13 @@
 </svelte:head>
 
 <section>
-
+	<h1>Welcome to SvelteKit</h1>
+	<span class="welcome">
+		<picture>
+			<source srcset={welcome} type="image/webp" />
+			<img src={welcomeFallback} alt="Welcome to Svelte" />
+		</picture>
+	</span>
 </section>
 
 <style>

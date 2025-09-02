@@ -11,6 +11,7 @@
 	<main>
 		{@render children()}
 	</main>
+	<footer class="footer"><a href="https://github.com/sveltejs/kit">Copyright</a></footer>
 </div>
 
 <style>
