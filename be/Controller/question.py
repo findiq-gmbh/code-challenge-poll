@@ -4,20 +4,24 @@ from fastapi import (
     HTTPException,
     Path,
     Query,
+    Request,
     status,
     BackgroundTasks,
 )
 from pydantic import BaseModel, Field
 
-from Model import Question
-from Repository.question import QuestionRepository
-from main import SessionDep
+from model import Question
+from repository.question import QuestionRepository
+from dependencies import SessionDep, limiter
 
 router = APIRouter()
 
+
 # todo: it could make sense to move the models out, or to split the actions into seperate files
 class CreateQuestionRequest(BaseModel):
-    title: str = Field(..., max_length=1000, description="The title of the question")
+    title: str = Field(
+        ..., min_length=1, max_length=1000, description="The title of the question"
+    )
 
 
 class CreateQuestionResponse(BaseModel):
@@ -26,8 +30,11 @@ class CreateQuestionResponse(BaseModel):
 
 # todo: find a better name
 class ListQuestionsResponse(BaseModel):
-    title: str
-    visitor_count: int
+    id: int = Field(..., description="The unique identifier for a question")
+    title: str = Field(..., description="The title of the question")
+    visitor_count: int = Field(
+        ..., description="The number of visitors to the question"
+    )
 
 
 class ReadQuestionResponse(BaseModel):
@@ -41,28 +48,32 @@ async def increment_visitor_count(question_id: int, session: SessionDep):
 
 
 @router.post("/questions", description="Add a new question", tags=["questions"])
+@limiter.limit("5/minute")
 def create_question(
-    question: CreateQuestionRequest, session: SessionDep
+    request: Request,
+    session: SessionDep,
+    question: CreateQuestionRequest,
 ) -> CreateQuestionResponse:
-    session.add(Question(title=question.title))
+    db_question = Question(title=question.title)
+    session.add(db_question)
     session.commit()
-    session.refresh(question)
+    session.refresh(db_question)
     session.close()
-    return CreateQuestionResponse(id=question.id)
+    return CreateQuestionResponse(id=db_question.id)
 
 
 @router.get("/questions", description="Get a list of questions", tags=["questions"])
 def read_questions(
     session: SessionDep,
-    offset: int = 0,
-    limit: Annotated[int, Query(le=100)] = 100,
+    offset: Annotated[int, Query(ge=0)],
+    limit: Annotated[int, Query(ge=1, le=100)],
 ) -> List[ListQuestionsResponse]:
     question_repository = QuestionRepository(session)
     questions = question_repository.get_questions(offset, limit)
     session.close()
     return [
         ListQuestionsResponse(
-            title=question.title, visitor_count=question.visitor_count
+            id=question.id, title=question.title, visitor_count=question.visitor_count
         )
         for question in questions
     ]
@@ -74,7 +85,11 @@ def read_questions(
     tags=["questions"],
 )
 def read_question(
-    question_id: int, session: SessionDep, background_tasks: BackgroundTasks
+    session: SessionDep,
+    background_tasks: BackgroundTasks,
+    question_id: int = Path(
+        ..., description="Get the information for a specific question", ge=1
+    ),
 ) -> Question:
     question_repository = QuestionRepository(session)
     question = question_repository.get_question_by_id(question_id)
@@ -86,7 +101,7 @@ def read_question(
         )
 
     background_tasks.add_task(
-        lambda: question_repository.increment_visitor_count(question_id, session)
+        increment_visitor_count, question_id=question_id, session=session
     )
 
     session.close()

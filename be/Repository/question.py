@@ -1,6 +1,6 @@
 from sqlmodel import select, text
-from Model import Question
-from main import SessionDep
+from model import Question
+from dependencies import SessionDep
 
 
 class QuestionRepository:
@@ -15,9 +15,9 @@ class QuestionRepository:
             select(Question).where(Question.id == question_id)
         ).first()
 
-    async def increment_visitor_count(self, question_id: int):
+    def increment_visitor_count(self, question_id: int):
         query = text(
             "UPDATE question SET visitor_count = visitor_count + 1 WHERE id = :question_id"
         )
-        await self.session.exec(query, {"question_id": question_id})
-        await self.session.commit()
+        self.session.exec(query.params(question_id=question_id))
+        self.session.commit()

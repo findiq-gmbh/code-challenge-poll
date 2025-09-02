@@ -1,6 +1,6 @@
 from sqlmodel import select
-from Model import Answer
-from main import SessionDep
+from model import Answer
+from dependencies import SessionDep
 
 
 class AnswerRepository:
@@ -22,5 +22,12 @@ class AnswerRepository:
             .limit(limit)
         ).all()
 
-    def get_all_answers(self):
-        return self.session.exec(select(Answer)).all()
+    def get_answer_by_id(self, answer_id: int):
+        return self.session.get(Answer, answer_id)
+
+    def get_all_answers(self, offset: int, limit: int):
+        return self.session.exec(
+            select(Answer)
+            .offset(offset)
+            .limit(limit)
+        ).all()
