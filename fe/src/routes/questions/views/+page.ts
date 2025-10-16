@@ -1,5 +1,5 @@
-import type { Question } from '../models';
-import type { PageLoad } from './$types';
+import type { PageLoad } from '../$types';
+import type { Question } from '../../models';
 
 export const load: PageLoad = async ({ fetch }) => {
 	try {
