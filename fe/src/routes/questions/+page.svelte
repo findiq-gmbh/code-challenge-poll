@@ -8,7 +8,7 @@
 	let questionCountText = '';
 
 	async function handleQuestionSubmit(text: string) {
-		const res = await fetch('http://localhost:8000/question', {
+		const res = await fetch('http://localhost:8000/questions', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ text })

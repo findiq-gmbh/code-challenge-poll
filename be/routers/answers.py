@@ -13,7 +13,7 @@ router = APIRouter(
 
 SessionDep = Annotated[Session, Depends(get_session)]
 
-@router.post("/answer/", status_code=status.HTTP_201_CREATED)
+@router.post("/answers/", status_code=status.HTTP_201_CREATED)
 def create_answer(answer: AnswerCreate, session: SessionDep) -> Answer:
     question = session.exec(select(Question).where(answer.question_id == Question.id)).first()
     if not question:

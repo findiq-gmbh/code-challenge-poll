@@ -11,7 +11,7 @@ router = APIRouter(
 
 SessionDep = Annotated[Session, Depends(get_session)]
 
-@router.post("/question/", response_model=Question, status_code=status.HTTP_201_CREATED)
+@router.post("/questions/", response_model=Question, status_code=status.HTTP_201_CREATED)
 def create_question(question: QuestionCreate, session: SessionDep) -> Question:
     db_question = Question.model_validate(question)
     session.add(db_question)
@@ -20,7 +20,7 @@ def create_question(question: QuestionCreate, session: SessionDep) -> Question:
     return db_question
 
 
-@router.get("/question/")
+@router.get("/questions/")
 def read_questions(
     session: SessionDep,
     offset: int = 0,
@@ -30,7 +30,7 @@ def read_questions(
     return [*questions]
 
 
-@router.get("/question/{question_id}")
+@router.get("/questions/{question_id}")
 def read_question(session: SessionDep, question_id: int = Path(gt=0)) -> Question:
     question = session.get(Question, question_id)
     if not question:
@@ -38,7 +38,7 @@ def read_question(session: SessionDep, question_id: int = Path(gt=0)) -> Questio
     return question
 
 
-@router.get("/question/{question_id}/answers")
+@router.get("/questions/{question_id}/answers")
 def read_answers(session: SessionDep, question_id:int = Path(gt=0),offset: Annotated[int, Query(ge=0)] = 0,
     limit: Annotated[int, Query(le=100)] = 100,) -> AnswersWithQuestion:
     question = session.get(Question, question_id)
@@ -58,7 +58,7 @@ def read_answers(session: SessionDep, question_id:int = Path(gt=0),offset: Annot
     )
     return answer_with_question
 
-@router.patch("/question/{question_id}/views")
+@router.patch("/questions/{question_id}/views")
 def increment_views(session:SessionDep,question_id:int = Path(gt=0)):
     question = session.get(Question, question_id)
     if not question:

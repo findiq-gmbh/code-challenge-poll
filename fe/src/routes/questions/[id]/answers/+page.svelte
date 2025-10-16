@@ -8,7 +8,7 @@
 	export let data: PageData;
 
 	async function handleAnswerSubmit(text: string) {
-		const res = await fetch('http://localhost:8000/answer', {
+		const res = await fetch('http://localhost:8000/answers', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ question_id: data.id, text })
@@ -21,7 +21,7 @@
 
 	async function trackPageView() {
 		try {
-			const res = await fetch(`http://localhost:8000/question/${data.id}/views`, {
+			const res = await fetch(`http://localhost:8000/questions/${data.id}/views`, {
 				method: 'PATCH',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ question_id: data.id })

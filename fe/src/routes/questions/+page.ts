@@ -3,7 +3,7 @@ import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch }) => {
 	try {
-		const res = await fetch('http://localhost:8000/question');
+		const res = await fetch('http://localhost:8000/questions');
 		if (!res.ok) {
 			throw new Error('Failed to load questions');
 		}

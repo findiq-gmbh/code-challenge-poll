@@ -5,7 +5,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 	const { id } = params;
 
 	try {
-		const res = await fetch(`http://localhost:8000/question/${id}/answers`);
+		const res = await fetch(`http://localhost:8000/questions/${id}/answers`);
 		if (!res.ok) {
 			throw new Error('Failed to load answers');
 		}
