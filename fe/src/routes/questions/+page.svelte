@@ -1,81 +1,92 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	let questions: Question[] = [];
-	let loading = true;
-	let error = '';
-	let text = '';
-	let message = '';
+	import { invalidateAll } from '$app/navigation';
+	import Container from '$lib/components/Container.svelte';
+	import FormInput from '$lib/components/FormInput.svelte';
+	import type { PageData } from './$types';
 
-	async function handleSubmit(event: SubmitEvent) {
-		event.preventDefault();
-		message = '';
-		try {
-			const response = await fetch('http://localhost:8000/question', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ text })
-			});
-			if (response.ok) {
-				message = 'Question submitted successfully!';
-				text = '';
-			} else {
-				message = 'Failed to submit question.';
-			}
-		} catch (error) {
-			message = 'Error submitting question.';
+	export let data: PageData;
+	let questionCountText = '';
+
+	async function handleQuestionSubmit(text: string) {
+		const res = await fetch('http://localhost:8000/question', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ text })
+		});
+		if (!res.ok) {
+			throw new Error('Failed to submit question');
+		}
+		await invalidateAll();
+	}
+
+	$: {
+		const count = data.questions.length;
+		if (count === 0) {
+			questionCountText = 'No questions';
+		} else if (count === 1) {
+			questionCountText = '1 Question';
+		} else {
+			questionCountText = `${count} Questions`;
 		}
 	}
-
-	async function fetchQuestions() {
-		loading = true;
-		error = '';
-		try {
-			const res = await fetch('http://localhost:8000/question');
-			if (res.ok) {
-				questions = await res.json();
-			} else {
-				error = 'Failed to load questions.';
-			}
-		} catch (e) {
-			error = 'Error loading questions.';
-		} finally {
-			loading = false;
-		}
-	}
-
-	onMount(fetchQuestions);
-
-	//Refresh questions after submitting a new one
-	$: if (message === 'Question submitted successfully!') {
-		fetchQuestions();
-	}
-
-
 </script>
 
-<form on:submit|preventDefault={handleSubmit}>
-	<label for="question">Question:</label>
-	<input id="question" type="text" bind:value={text} required />
-	<button type="submit">Submit</button>
-</form>
+<Container>
+	<h1>Questions</h1>
 
-{#if message}
-	<p>{message}</p>
-{/if}
+	<FormInput placeholder="Ask a question..." buttonLabel="Ask" onSubmit={handleQuestionSubmit} />
 
+	{#if data.error}
+		<p class="error">{data.error}</p>
+	{:else}
+		<p>{questionCountText}</p>
+		<ul class="list">
+			{#each data.questions as question (question.id)}
+				<li class="item">
+					<span class="text">{question.text}</span>
+					<a href={`/questions/${question.id}/answers`}>Show Answers →</a>
+				</li>
+			{/each}
+		</ul>
+	{/if}
+</Container>
 
-{#if loading}
-	<p>Loading questions...</p>
-{:else if error}
-	<p>{error}</p>
-{:else}
-	<h2>All Questions</h2>
-	<ul>
-		{#each questions as question}
-			<li>{question.text}</li>
-			<a href="/answers/{question.id}">Show Answers</a>
-		{/each}
-	</ul>
-{/if}
+<style>
+	.list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.item {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0.75rem;
+		border: 1px solid #ddd;
+		border-radius: 6px;
+		background: #fafafa;
+		transition: background-color 0.2s;
+	}
+
+	.item:hover {
+		background: #f0f0f0;
+	}
+
+	.item a {
+		color: #007bff;
+		text-decoration: none;
+		font-size: 0.9rem;
+	}
+
+	.item a:hover {
+		text-decoration: underline;
+	}
+
+	.text {
+		width: 80%;
+	}
+</style>
