@@ -7,6 +7,7 @@ app = FastAPI()
 class Question(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     text: str = Field(index=True)
+    visit_count: int = Field(default=0)
 
 class Answer(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
@@ -59,6 +60,21 @@ def read_question(question_id: int, session: SessionDep) -> Question:
         raise HTTPException(status_code=404, detail="question not found")
     return question
 
+@app.post("/question/{question_id}/visit")
+def increment_visit(question_id: int, session: SessionDep) -> dict[str, int]:
+    question = session.get(Question, question_id)
+    if not question:
+        raise HTTPException(status_code=404, detail="question not found")
+    question.visit_count += 1
+    session.add(question)
+    session.commit()
+    session.refresh(question)
+    return {"question_id": question.id, "visit_count": question.visit_count}
+
+@app.get("/visits")
+def list_visits(session: SessionDep) -> list[dict[str, int | str]]:
+    rows = session.exec(select(Question)).all()
+    return [{"question_id": q.id, "text": q.text, "visit_count": q.visit_count} for q in rows]
 
 @app.post("/answer/")
 def create_answer(answer: Answer, session: SessionDep) -> Answer:
@@ -82,5 +98,5 @@ def read_answers(
 def read_answer(answer_id: int, session: SessionDep) -> Answer:
     answer = session.get(Answer, answer_id)
     if not answer:
-        raise HTTPException(status_code=200, detail="answer not found")
+        raise HTTPException(status_code=404, detail="answer not found")
     return answer

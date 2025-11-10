@@ -1,16 +1,23 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+
 	let questions: Question[] = [];
 	let loading = true;
 	let error = '';
 	let text = '';
 	let message = '';
+	let submitting = false;
 
 	async function handleSubmit(event: SubmitEvent) {
 		event.preventDefault();
+		if (submitting) {
+			return;
+		}
 		message = '';
+
 		try {
-			const response = await fetch('http://localhost:8000/question', {
+			submitting = true;
+			const response = await fetch('/api/question/', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -20,11 +27,14 @@
 			if (response.ok) {
 				message = 'Question submitted successfully!';
 				text = '';
+				fetchQuestions();
 			} else {
 				message = 'Failed to submit question.';
 			}
 		} catch (error) {
 			message = 'Error submitting question.';
+		} finally {
+			submitting = false;
 		}
 	}
 
@@ -32,9 +42,9 @@
 		loading = true;
 		error = '';
 		try {
-			const res = await fetch('http://localhost:8000/question');
-			if (res.ok) {
-				questions = await res.json();
+			const response = await fetch('/api/question/');
+			if (response.ok) {
+				questions = await response.json();
 			} else {
 				error = 'Failed to load questions.';
 			}
@@ -46,36 +56,43 @@
 	}
 
 	onMount(fetchQuestions);
-
-	//Refresh questions after submitting a new one
-	$: if (message === 'Question submitted successfully!') {
-		fetchQuestions();
-	}
-
-
 </script>
 
-<form on:submit|preventDefault={handleSubmit}>
-	<label for="question">Question:</label>
-	<input id="question" type="text" bind:value={text} required />
-	<button type="submit">Submit</button>
-</form>
+<div class="form-content">
+	<form on:submit|preventDefault={handleSubmit}>
+		<label for="question">Question:</label>
+		<input id="question" type="text" bind:value={text} required />
+		<button type="submit" disabled={submitting}>{submitting ? 'Submitting...' : 'Submit'}</button>
+	</form>
 
-{#if message}
-	<p>{message}</p>
-{/if}
-
+	{#if message}
+		<p>{message}</p>
+	{/if}
+</div>
 
 {#if loading}
 	<p>Loading questions...</p>
 {:else if error}
 	<p>{error}</p>
+{:else if questions.length === 0}
+	<p>No questions yet.</p>
 {:else}
-	<h2>All Questions</h2>
-	<ul>
-		{#each questions as question}
-			<li>{question.text}</li>
-			<a href="/answers/{question.id}">Show Answers</a>
-		{/each}
-	</ul>
+	<table>
+		<thead>
+			<tr>
+				<th style="text-align:left">Question</th>
+				<th style="text-align:right"></th>
+			</tr>
+		</thead>
+		<tbody>
+			{#each questions as question}
+				<tr>
+					<td>{question.text}</td>
+					<td style="text-align:center">
+						<a href="/answers/{question.id}">Show Answers</a>
+					</td>
+				</tr>
+			{/each}
+		</tbody>
+	</table>
 {/if}
