@@ -1,51 +1,42 @@
 <script lang="ts">
+	import { afterNavigate, beforeNavigate, onNavigate } from '$app/navigation';
+
+	import { ModeWatcher } from 'mode-watcher';
 	import Header from './Header.svelte';
+	import { Toaster } from '$lib/components/ui/sonner';
 	import '../app.css';
 
 	let { children } = $props();
+	let loading = $state(false);
+
+	beforeNavigate(() => {
+		loading = true;
+	});
+	afterNavigate(() => {
+		loading = false;
+	});
+
+	onNavigate((navigation) => {
+		if (!document.startViewTransition) return;
+		// Hide the loading bar before startViewTransition captures its screenshot
+		loading = false;
+		return new Promise((resolve) => {
+			document.startViewTransition(async () => {
+				resolve();
+				await navigation.complete;
+			});
+		});
+	});
 </script>
 
-<div class="app">
+<ModeWatcher />
+<div class="min-h-screen flex flex-col bg-background text-foreground">
+	{#if loading}
+		<div class="fixed top-0 left-0 right-0 h-0.5 bg-primary animate-pulse z-50"></div>
+	{/if}
 	<Header />
-
-	<main>
+	<main class="flex-1 w-full max-w-3xl mx-auto px-4 py-8">
 		{@render children()}
 	</main>
+	<Toaster richColors />
 </div>
-
-<style>
-	.app {
-		display: flex;
-		flex-direction: column;
-		min-height: 100vh;
-	}
-
-	main {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		padding: 1rem;
-		width: 100%;
-		max-width: 64rem;
-		margin: 0 auto;
-		box-sizing: border-box;
-	}
-
-	footer {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		padding: 12px;
-	}
-
-	footer a {
-		font-weight: bold;
-	}
-
-	@media (min-width: 480px) {
-		footer {
-			padding: 12px 0;
-		}
-	}
-</style>

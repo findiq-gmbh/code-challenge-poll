@@ -1,129 +1,50 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import logo from '$lib/images/svelte-logo.svg';
-	import github from '$lib/images/github.svg';
+	import { mode, toggleMode } from 'mode-watcher';
+	import { Moon, Sun } from 'lucide-svelte';
+
+	const links = [
+		{ href: '/questions', label: 'Questions' },
+		{ href: '/visits', label: 'Visits' }
+	];
 </script>
 
-<header>
-	<div class="corner">
-		<a href="https://svelte.dev/docs/kit">
-			<img src={logo} alt="SvelteKit" />
+<header
+	class="bg-background border-b border-border shadow-sm"
+	style="view-transition-name: site-header"
+>
+	<div class="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
+		<a
+			href="/"
+			class="text-lg font-bold text-foreground tracking-tight hover:text-primary transition-colors"
+		>
+			Polling
 		</a>
-	</div>
-
-	<nav>
-		<svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
-		</svg>
-		<ul>
-			<li aria-current={page.url.pathname === '/' ? 'page' : undefined}>
-				<a href="/">Home</a>
-			</li>
-			<li aria-current={page.url.pathname === '/questions' ? 'page' : undefined}>
-				<a href="/questions">questions</a>
-			</li>
-			<li aria-current={page.url.pathname.startsWith('/answers') ? 'page' : undefined}>
-				<a href="/answers">answers</a>
-			</li>
-		</ul>
-		<svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
-		</svg>
-	</nav>
-
-	<div class="corner">
-		<a href="https://github.com/sveltejs/kit">
-			<img src={github} alt="GitHub" />
-		</a>
+		<div class="flex items-center gap-1">
+			<nav class="flex items-center gap-1">
+				{#each links as link (link.label)}
+					<a
+						href={link.href}
+						class="px-3 py-1.5 rounded-md text-sm font-medium transition-colors
+							{page.url.pathname.startsWith(link.href)
+							? 'bg-primary/10 text-primary'
+							: 'text-muted-foreground hover:text-foreground hover:bg-muted'}"
+					>
+						{link.label}
+					</a>
+				{/each}
+			</nav>
+			<button
+				onclick={toggleMode}
+				aria-label="Toggle theme"
+				class="ml-2 p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+			>
+				{#if mode.current === 'dark'}
+					<Sun size={16} />
+				{:else}
+					<Moon size={16} />
+				{/if}
+			</button>
+		</div>
 	</div>
 </header>
-
-<style>
-	header {
-		display: flex;
-		justify-content: space-between;
-	}
-
-	.corner {
-		width: 3em;
-		height: 3em;
-	}
-
-	.corner a {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 100%;
-		height: 100%;
-	}
-
-	.corner img {
-		width: 2em;
-		height: 2em;
-		object-fit: contain;
-	}
-
-	nav {
-		display: flex;
-		justify-content: center;
-		--background: rgba(255, 255, 255, 0.7);
-	}
-
-	svg {
-		width: 2em;
-		height: 3em;
-		display: block;
-	}
-
-	path {
-		fill: var(--background);
-	}
-
-	ul {
-		position: relative;
-		padding: 0;
-		margin: 0;
-		height: 3em;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		list-style: none;
-		background: var(--background);
-		background-size: contain;
-	}
-
-	li {
-		position: relative;
-		height: 100%;
-	}
-
-	li[aria-current='page']::before {
-		--size: 6px;
-		content: '';
-		width: 0;
-		height: 0;
-		position: absolute;
-		top: 0;
-		left: calc(50% - var(--size));
-		border: var(--size) solid transparent;
-		border-top: var(--size) solid var(--color-theme-1);
-	}
-
-	nav a {
-		display: flex;
-		height: 100%;
-		align-items: center;
-		padding: 0 0.5rem;
-		color: var(--color-text);
-		font-weight: 700;
-		font-size: 0.8rem;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		text-decoration: none;
-		transition: color 0.2s linear;
-	}
-
-	a:hover {
-		color: var(--color-theme-1);
-	}
-</style>
