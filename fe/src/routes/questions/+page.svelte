@@ -77,7 +77,7 @@
 			</Card>
 		{:else}
 			<ul class="space-y-3">
-				{#each questions as question, i}
+				{#each questions as question, i (question.id)}
 					<li
 						class="animate-in fade-in-0 slide-in-from-bottom-2 duration-200"
 						style="animation-delay: {i * 40}ms"

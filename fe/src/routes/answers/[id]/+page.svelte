@@ -94,7 +94,7 @@
 			</Card>
 		{:else}
 			<ul class="space-y-2">
-				{#each answers as answer, i}
+				{#each answers as answer, i (answer.id)}
 					<li
 						class="animate-in fade-in-0 slide-in-from-bottom-2 duration-200"
 						style="animation-delay: {i * 40}ms"
