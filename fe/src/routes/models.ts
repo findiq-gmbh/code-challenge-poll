@@ -1,9 +1,9 @@
-interface Question {
+export interface Question {
     id: number
     text: string
 }
 
-interface Answer {
+export interface Answer {
     id: number
     text: string
     question_id: number
