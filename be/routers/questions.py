@@ -7,6 +7,7 @@ from models import Answer, Question
 from schemas import AnswerCreate, QuestionCreate
 import services.answers as answer_service
 import services.questions as question_service
+import services.visits as visit_service
 
 router = APIRouter(prefix="/questions", tags=["questions"])
 
@@ -44,6 +45,15 @@ def read_answers_for_question(
     if not question:
         raise HTTPException(status_code=404, detail="Question not found")
     return answer_service.get_answers_by_question(session, question_id, offset, limit)
+
+
+@router.post("/{question_id}/visit", status_code=201, tags=["visits"])
+def record_visit(question_id: int, session: SessionDep) -> dict:
+    question = question_service.get_question(session, question_id)
+    if not question:
+        raise HTTPException(status_code=404, detail="Question not found")
+    count = visit_service.record_visit(session, question_id)
+    return {"count": count}
 
 
 @router.post("/{question_id}/answers", status_code=201, tags=["answers"])

@@ -28,3 +28,9 @@ class AnswerCreate(BaseModel):
     @classmethod
     def text_not_blank(cls, v: str) -> str:
         return validate_text(v)
+
+
+class QuestionWithVisits(BaseModel):
+    id: int
+    text: str
+    visit_count: int
