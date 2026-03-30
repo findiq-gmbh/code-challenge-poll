@@ -1,4 +1,3 @@
-
 # Frontend
 
 SvelteKit + Svelte 5 + TypeScript, styled with Tailwind CSS v4 and shadcn-svelte.
@@ -22,8 +21,8 @@ npm run preview         # preview the built app locally
 
 See `.env.example`. The app will not build without `PUBLIC_API_URL` — the build fails fast if it is missing rather than shipping a broken URL at runtime.
 
-| Variable | Default | Description |
-|----------|---------|-------------|
+| Variable         | Default      | Description                                               |
+| ---------------- | ------------ | --------------------------------------------------------- |
 | `PUBLIC_API_URL` | _(required)_ | Base URL of the backend API, e.g. `http://localhost:8000` |
 
 ## Structure
@@ -73,4 +72,3 @@ npm run lint        # prettier + eslint
 npm run format      # prettier --write
 npm run test        # vitest (unit tests)
 ```
-

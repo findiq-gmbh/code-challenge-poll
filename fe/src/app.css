@@ -1,7 +1,7 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 @import '@fontsource/fira-mono';
-@import "tw-animate-css";
-@import "@fontsource-variable/inter";
+@import 'tw-animate-css';
+@import '@fontsource-variable/inter';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -14,19 +14,19 @@
 	--popover-foreground: oklch(0.2101 0.0318 264.6645);
 	--primary: oklch(0.6716 0.1368 48.513);
 	--primary-foreground: oklch(1 0 0);
-	--secondary: oklch(0.5360 0.0398 196.028);
+	--secondary: oklch(0.536 0.0398 196.028);
 	--secondary-foreground: oklch(1 0 0);
 	--muted: oklch(0.9614 0.0024 264.532);
-	--muted-foreground: oklch(0.5317 0.0160 264.6645);
+	--muted-foreground: oklch(0.5317 0.016 264.6645);
 	--accent: oklch(0.9398 0 0);
 	--accent-foreground: oklch(0.2101 0.0318 264.6645);
-	--destructive: oklch(0.6278 0.2574 26.0);
+	--destructive: oklch(0.6278 0.2574 26);
 	--border: oklch(0.9216 0.0036 264.532);
 	--input: oklch(0.9216 0.0036 264.532);
 	--ring: oklch(0.6716 0.1368 48.513);
-	--chart-1: oklch(0.5633 0.0520 196.028);
-	--chart-2: oklch(0.7214 0.1337 49.980);
-	--chart-3: oklch(0.8628 0.0895 68.0);
+	--chart-1: oklch(0.5633 0.052 196.028);
+	--chart-2: oklch(0.7214 0.1337 49.98);
+	--chart-3: oklch(0.8628 0.0895 68);
 	--chart-4: oklch(0.5937 0 0);
 	--chart-5: oklch(0.6571 0 0);
 	--radius: 0.75rem;
@@ -47,31 +47,31 @@
 	--card-foreground: oklch(0.8109 0 0);
 	--popover: oklch(0.1786 0 0);
 	--popover-foreground: oklch(0.8109 0 0);
-	--primary: oklch(0.7214 0.1337 49.980);
+	--primary: oklch(0.7214 0.1337 49.98);
 	--primary-foreground: oklch(0.1797 0.0043 308.193);
-	--secondary: oklch(0.5633 0.0520 196.028);
+	--secondary: oklch(0.5633 0.052 196.028);
 	--secondary-foreground: oklch(0.1797 0.0043 308.193);
-	--muted: oklch(0.2500 0.0043 308.193);
-	--muted-foreground: oklch(0.6000 0 0);
-	--accent: oklch(0.2800 0 0);
+	--muted: oklch(0.25 0.0043 308.193);
+	--muted-foreground: oklch(0.6 0 0);
+	--accent: oklch(0.28 0 0);
 	--accent-foreground: oklch(0.8109 0 0);
-	--destructive: oklch(0.6278 0.2574 26.0);
+	--destructive: oklch(0.6278 0.2574 26);
 	--border: oklch(1 0 0 / 10%);
 	--input: oklch(1 0 0 / 15%);
-	--ring: oklch(0.7214 0.1337 49.980);
-	--chart-1: oklch(0.5633 0.0520 196.028);
-	--chart-2: oklch(0.7214 0.1337 49.980);
-	--chart-3: oklch(0.8628 0.0895 68.0);
+	--ring: oklch(0.7214 0.1337 49.98);
+	--chart-1: oklch(0.5633 0.052 196.028);
+	--chart-2: oklch(0.7214 0.1337 49.98);
+	--chart-3: oklch(0.8628 0.0895 68);
 	--chart-4: oklch(0.5937 0 0);
 	--chart-5: oklch(0.6571 0 0);
 	--sidebar: oklch(0.1786 0 0);
 	--sidebar-foreground: oklch(0.8109 0 0);
-	--sidebar-primary: oklch(0.7214 0.1337 49.980);
+	--sidebar-primary: oklch(0.7214 0.1337 49.98);
 	--sidebar-primary-foreground: oklch(0.1797 0.0043 308.193);
-	--sidebar-accent: oklch(0.2500 0.0043 308.193);
+	--sidebar-accent: oklch(0.25 0.0043 308.193);
 	--sidebar-accent-foreground: oklch(0.8109 0 0);
 	--sidebar-border: oklch(1 0 0 / 10%);
-	--sidebar-ring: oklch(0.7214 0.1337 49.980);
+	--sidebar-ring: oklch(0.7214 0.1337 49.98);
 }
 
 @theme inline {
@@ -129,25 +129,29 @@
 }
 
 @custom-variant data-open {
-	&:where([data-state="open"]), &:where([data-open]:not([data-open="false"])) {
+	&:where([data-state='open']),
+	&:where([data-open]:not([data-open='false'])) {
 		@slot;
 	}
 }
 
 @custom-variant data-closed {
-	&:where([data-state="closed"]), &:where([data-closed]:not([data-closed="false"])) {
+	&:where([data-state='closed']),
+	&:where([data-closed]:not([data-closed='false'])) {
 		@slot;
 	}
 }
 
 @custom-variant data-checked {
-	&:where([data-state="checked"]), &:where([data-checked]:not([data-checked="false"])) {
+	&:where([data-state='checked']),
+	&:where([data-checked]:not([data-checked='false'])) {
 		@slot;
 	}
 }
 
 @custom-variant data-unchecked {
-	&:where([data-state="unchecked"]), &:where([data-unchecked]:not([data-unchecked="false"])) {
+	&:where([data-state='unchecked']),
+	&:where([data-unchecked]:not([data-unchecked='false'])) {
 		@slot;
 	}
 }
@@ -159,25 +163,27 @@
 }
 
 @custom-variant data-disabled {
-	&:where([data-disabled="true"]), &:where([data-disabled]:not([data-disabled="false"])) {
+	&:where([data-disabled='true']),
+	&:where([data-disabled]:not([data-disabled='false'])) {
 		@slot;
 	}
 }
 
 @custom-variant data-active {
-	&:where([data-state="active"]), &:where([data-active]:not([data-active="false"])) {
+	&:where([data-state='active']),
+	&:where([data-active]:not([data-active='false'])) {
 		@slot;
 	}
 }
 
 @custom-variant data-horizontal {
-	&:where([data-orientation="horizontal"]) {
+	&:where([data-orientation='horizontal']) {
 		@slot;
 	}
 }
 
 @custom-variant data-vertical {
-	&:where([data-orientation="vertical"]) {
+	&:where([data-orientation='vertical']) {
 		@slot;
 	}
 }
@@ -192,10 +198,16 @@
 
 /* Page transitions via View Transitions API */
 @keyframes page-fade-out {
-	to { opacity: 0; translate: 0 -6px; }
+	to {
+		opacity: 0;
+		translate: 0 -6px;
+	}
 }
 @keyframes page-fade-in {
-	from { opacity: 0; translate: 0 6px; }
+	from {
+		opacity: 0;
+		translate: 0 6px;
+	}
 }
 
 ::view-transition-old(root) {

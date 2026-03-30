@@ -1,17 +1,23 @@
 <script lang="ts">
-import { page } from "$app/state";
-import { mode, toggleMode } from "mode-watcher";
-import { Moon, Sun } from "lucide-svelte";
+	import { page } from '$app/state';
+	import { mode, toggleMode } from 'mode-watcher';
+	import { Moon, Sun } from 'lucide-svelte';
 
-const links = [
-  { href: "/questions", label: "Questions" },
-  { href: "/visits", label: "Visits" },
-];
+	const links = [
+		{ href: '/questions', label: 'Questions' },
+		{ href: '/visits', label: 'Visits' }
+	];
 </script>
 
-<header class="bg-background border-b border-border shadow-sm" style="view-transition-name: site-header">
+<header
+	class="bg-background border-b border-border shadow-sm"
+	style="view-transition-name: site-header"
+>
 	<div class="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
-		<a href="/" class="text-lg font-bold text-foreground tracking-tight hover:text-primary transition-colors">
+		<a
+			href="/"
+			class="text-lg font-bold text-foreground tracking-tight hover:text-primary transition-colors"
+		>
 			Polling
 		</a>
 		<div class="flex items-center gap-1">
@@ -21,8 +27,8 @@ const links = [
 						href={link.href}
 						class="px-3 py-1.5 rounded-md text-sm font-medium transition-colors
 							{page.url.pathname.startsWith(link.href)
-								? 'bg-primary/10 text-primary'
-								: 'text-muted-foreground hover:text-foreground hover:bg-muted'}"
+							? 'bg-primary/10 text-primary'
+							: 'text-muted-foreground hover:text-foreground hover:bg-muted'}"
 					>
 						{link.label}
 					</a>
@@ -33,7 +39,7 @@ const links = [
 				aria-label="Toggle theme"
 				class="ml-2 p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
 			>
-				{#if mode.current === "dark"}
+				{#if mode.current === 'dark'}
 					<Sun size={16} />
 				{:else}
 					<Moon size={16} />

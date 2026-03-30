@@ -30,7 +30,9 @@
 				const detail = body?.detail;
 				const message = Array.isArray(detail)
 					? (detail[0]?.msg ?? 'Validation error.')
-					: (typeof detail === 'string' ? detail : 'Failed to submit question.');
+					: typeof detail === 'string'
+						? detail
+						: 'Failed to submit question.';
 				toast.error(message);
 			}
 		} catch {
@@ -76,10 +78,16 @@
 		{:else}
 			<ul class="space-y-3">
 				{#each questions as question, i}
-					<li class="animate-in fade-in-0 slide-in-from-bottom-2 duration-200" style="animation-delay: {i * 40}ms">
+					<li
+						class="animate-in fade-in-0 slide-in-from-bottom-2 duration-200"
+						style="animation-delay: {i * 40}ms"
+					>
 						<Card class="transition-shadow duration-200 hover:shadow-sm">
 							<CardContent class="flex items-center justify-between gap-4 py-4">
-								<a href="/answers/{question.id}" class="text-primary underline-offset-4 hover:underline transition-colors">
+								<a
+									href="/answers/{question.id}"
+									class="text-primary underline-offset-4 hover:underline transition-colors"
+								>
 									{question.text}
 								</a>
 								<Button href="/answers/{question.id}" variant="outline" size="sm" class="shrink-0">

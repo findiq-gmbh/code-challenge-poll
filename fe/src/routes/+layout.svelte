@@ -1,32 +1,32 @@
 <script lang="ts">
-import { afterNavigate, beforeNavigate, onNavigate } from "$app/navigation";
+	import { afterNavigate, beforeNavigate, onNavigate } from '$app/navigation';
 
-import { ModeWatcher } from "mode-watcher";
-import Header from "./Header.svelte";
-import { Toaster } from "$lib/components/ui/sonner";
-import "../app.css";
+	import { ModeWatcher } from 'mode-watcher';
+	import Header from './Header.svelte';
+	import { Toaster } from '$lib/components/ui/sonner';
+	import '../app.css';
 
-let { children } = $props();
-let loading = $state(false);
+	let { children } = $props();
+	let loading = $state(false);
 
-beforeNavigate(() => {
-  loading = true;
-});
-afterNavigate(() => {
-  loading = false;
-});
+	beforeNavigate(() => {
+		loading = true;
+	});
+	afterNavigate(() => {
+		loading = false;
+	});
 
-onNavigate((navigation) => {
-  if (!document.startViewTransition) return;
-  // Hide the loading bar before startViewTransition captures its screenshot
-  loading = false;
-  return new Promise((resolve) => {
-    document.startViewTransition(async () => {
-      resolve();
-      await navigation.complete;
-    });
-  });
-});
+	onNavigate((navigation) => {
+		if (!document.startViewTransition) return;
+		// Hide the loading bar before startViewTransition captures its screenshot
+		loading = false;
+		return new Promise((resolve) => {
+			document.startViewTransition(async () => {
+				resolve();
+				await navigation.complete;
+			});
+		});
+	});
 </script>
 
 <ModeWatcher />

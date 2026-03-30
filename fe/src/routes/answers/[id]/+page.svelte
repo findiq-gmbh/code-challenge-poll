@@ -32,7 +32,9 @@
 				const detail = body?.detail;
 				const message = Array.isArray(detail)
 					? (detail[0]?.msg ?? 'Validation error.')
-					: (typeof detail === 'string' ? detail : 'Failed to submit answer.');
+					: typeof detail === 'string'
+						? detail
+						: 'Failed to submit answer.';
 				toast.error(message);
 			}
 		} catch {
@@ -81,7 +83,8 @@
 	<!-- Answers list -->
 	<div>
 		<h2 class="text-base font-semibold text-foreground mb-4">
-			{answers.length} {answers.length === 1 ? 'Answer' : 'Answers'}
+			{answers.length}
+			{answers.length === 1 ? 'Answer' : 'Answers'}
 		</h2>
 		{#if answers.length === 0}
 			<Card>
@@ -92,7 +95,10 @@
 		{:else}
 			<ul class="space-y-2">
 				{#each answers as answer, i}
-					<li class="animate-in fade-in-0 slide-in-from-bottom-2 duration-200" style="animation-delay: {i * 40}ms">
+					<li
+						class="animate-in fade-in-0 slide-in-from-bottom-2 duration-200"
+						style="animation-delay: {i * 40}ms"
+					>
 						<Card class="transition-shadow duration-200 hover:shadow-sm">
 							<CardContent class="py-3 text-foreground">
 								{answer.text}
